@@ -3,7 +3,6 @@ import "wxt/browser";
 
 declare module "wxt/browser" {
   export type PublicPath =
-    | "/Vector.png"
     | "/background.js"
     | "/content-scripts/content.js"
     | "/icon/128.png"
@@ -12,7 +11,7 @@ declare module "wxt/browser" {
     | "/icon/48.png"
     | "/icon/96.png"
     | "/popup.html"
-    | "/styles.js"
+    | "/tailwind.js"
     | "/wxt.svg"
   type HtmlPublicPath = Extract<PublicPath, `${string}.html`>
   export interface WxtRuntime {
