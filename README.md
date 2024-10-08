@@ -2,8 +2,9 @@
 
 
 # ChatGPTWriter Assignment
-You guys might already know this but "npm install" wxt is required
+You guys might already know this but "npm install wxt" is required after you clone the repo
 All the boxes for the Assignment are ticked!!!!!!!!
+
 few changes have been added 
 1. Generate button does not change to regenerate instead upon clicking generate in changes its state to Generating (delay on the response have been added on purpose to simulate a api call)
 2.  Prompts and responses are stored in order. scroller have been added to view previous prompts and responses
