@@ -1,5 +1,5 @@
 Update I have not been Selected for the role, completed and interegrated a Ai response For the Given Assignment .Code was just sitting on the pc Hope it helps someone. 
-P.S Groq has a daily Limit on tokens per minute and per day. UPDATED VIDEO HAS BEEN ADDED BELOW
+P.S Groq has a daily Limit on tokens per minute and per day on their free plan. UPDATED VIDEO HAS BEEN ADDED BELOW
 
 
 # Ideas For the project
