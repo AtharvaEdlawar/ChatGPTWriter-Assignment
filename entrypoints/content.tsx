@@ -3,38 +3,70 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import './tailwind.css'
 
-// Define TypeScript interfaces for type safety
 interface Message {
-  type: 'prompt' | 'response';  // Message can be either user prompt or AI response
+  type: 'prompt' | 'response';
   text: string;
 }
 
 interface ModalProps {
-  onClose: () => void;   // Function to handle modal closing
+  onClose: () => void;
 }
 
-// Modal component definition
+// Add API configuration
+const GROQ_API_KEY = 'YourAPIKEY'; // Store this securely
+const GROQ_API_URL = 'YOUR URL';
+
+// Function to generate AI response using Groq API
+async function generateAIResponse(prompt: string): Promise<string> {
+  try {
+    const response = await fetch(GROQ_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama3-8b-8192',  // or your preferred Groq model
+        messages: [
+          {
+            role: 'system',
+            content: 'Provide professional and concise responses for Text messages.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 2048,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error('Error generating AI response:', error);
+    throw error;
+  }
+}
+
 const Modal: React.FC<ModalProps> = ({ onClose }) => {
+  const [prompt, setPrompt] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
-   // State management
-  const [prompt, setPrompt] = useState('');  // Store current prompt text
-  const [messages, setMessages] = useState<Message[]>([]); // Store conversation history
-  const [isGenerating, setIsGenerating] = useState(false);   // Track if AI is generating response
-  
-  // Refs for DOM manipulation
-  const messagesEndRef = useRef<HTMLDivElement>(null); // Reference to bottom of messages for auto-scrolling
-  const modalRef = useRef<HTMLDivElement>(null); // Reference to modal for click-outside detection
-
-
-  // Function to scroll to bottom of messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-// Auto-scroll when messages update
   useEffect(scrollToBottom, [messages]);
 
-  // Handle clicks outside modal to close it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -48,23 +80,26 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
     };
   }, [onClose]);
 
-
-  // Handle generation of AI response
-  const handleGenerate = useCallback(() => {
-    if (!prompt.trim()) return;  // Don't generate if prompt is empty
+  // Updated handleGenerate to use Groq API
+  const handleGenerate = useCallback(async () => {
+    if (!prompt.trim()) return;
     
     setIsGenerating(true);
     setMessages(prev => [...prev, { type: 'prompt', text: prompt }]);
     
-
-    // Simulate AI response with timeout
-    // In a real implementation, this would be an API call
-    setTimeout(() => {
-      const response = "Thank you for the opportunity! If you have any more questions or if there's anything else I can help you with, feel free to ask.";
+    try {
+      const response = await generateAIResponse(prompt);
       setMessages(prev => [...prev, { type: 'response', text: response }]);
+    } catch (error) {
+      // Handle error gracefully
+      setMessages(prev => [...prev, { 
+        type: 'response', 
+        text: 'Sorry, I encountered an error generating a response. Please try again.' 
+      }]);
+    } finally {
       setPrompt('');
       setIsGenerating(false);
-    }, 1000);
+    }
   }, [prompt]);
 
 
@@ -92,7 +127,7 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[100000]">
       <div 
         ref={modalRef}
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg w-[500px] max-h-[80vh] overflow-hidden"
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-customGray rounded-lg shadow-lg w-[500px] max-h-[80vh] overflow-hidden"
       >
         <div className="flex flex-col w- h-full">
           {/* Messages container */}
@@ -118,7 +153,7 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
           <div className="border-t border-gray-200 p-4">
             <textarea 
             id='PromptA'
-              className="w-full p-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:border-blue-500 mb-3"
+              className="!text-white w-full p-2 border placeholder-gray-400 border-gray-300 rounded-lg resize-none focus:ring-3 focus:ring-white"
               placeholder="Your prompt"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -142,8 +177,8 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
               <button 
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className={`flex items-center px-5 py-[5px] text-white bg-[#3B82F6] rounded-lg ml-2 ${
-                  isGenerating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#006097]'
+                className={`flex items-center px-5 py-[5px] text-white bg-blue-800 rounded-lg ml-2 ${
+                  isGenerating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-950'
                 }`}
               >
                 <svg className="w-4 h-4 mr-1.5" viewBox="0 0 25 25" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

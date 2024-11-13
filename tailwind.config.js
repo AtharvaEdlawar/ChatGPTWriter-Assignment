@@ -2,7 +2,11 @@
 export default {
   content: ["assets/**", "entrypoints/**", "components/**"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        customGray: '#242424', // you can name this as you like
+      },
+    },
   },
   plugins: [],
 }

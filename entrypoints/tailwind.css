@@ -6,11 +6,10 @@
 all: unset;
 height: 30px;
 width: 97%;
-border: 1px solid grey;
 padding: 0.5rem;
 border-radius: 0.5rem;
 margin-bottom: 0.75rem;
-background: white !important;
+background: black!important;
 overflow-y: hidden;
 overflow-x: hidden;
 }
