@@ -7,13 +7,16 @@ P.S Groq has a daily Limit on tokens per minute and per day. UPDATED VIDEO HAS B
 1)add a dropDown in the model To changed the LMs then feed it to the Groq request model.
  
 2)context can also be to the model then can be fed to  the groq request model  NOTE context should be fed before the prompt Example: 'respond to' + context + prompt
+
+
 This should result in a very OG chatgpt Writer uiux
 
 
 
 ui have been changed (Just the color theme)
 Also added a Login Signup popUp
-The main Script in the content.tsx 
+
+The main Script is in the content.tsx 
 POPUp contatins the login.
 
 
