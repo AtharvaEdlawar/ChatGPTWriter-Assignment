@@ -4,7 +4,7 @@ P.S Groq has a daily Limit on tokens per minute and per day on their free plan. 
 
 # Ideas For the project
  
-1)add a dropDown in the model To changed the LMs then feed it to the Groq request model.
+1)add a dropDown in the model To changed the LLMs then feed it to the Groq request model.
  
 2)context can also be to the model then can be fed to  the groq request model  NOTE context should be fed before the prompt Example: 'respond to' + context + prompt
 
